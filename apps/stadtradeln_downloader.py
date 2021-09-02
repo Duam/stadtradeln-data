@@ -1,21 +1,6 @@
+import click
 from stadtradeln_data.raw_data_retrieval import Result, download_dataset, extract_dataset
 
-print("Trying to download file")
-result = download_dataset(2018)
-if result == Result.UNKNOWN_DATASET:
-    print("The dataset you requested does not exist")
-    quit(0)
-elif result == Result.FILE_ALREADY_EXISTS:
-    print("File already exists")
-elif result == Result.DOWNLOAD_FAILED:
-    print("Download failed")
-    quit(0)
-else:
-    print("Download succeeded")
-
-print("Extracting dataset")
-extract_dataset(2018)
-print("Extraction done.")
 
 """
 # TODO:
@@ -38,3 +23,41 @@ https://www.mcloud.de/web/guest/suche/-/results/detail/ECF9DF02-37DC-4268-B017-A
 and move them to /tmp/stadtradeln_data/
 "
 """
+
+
+@click.command()
+@click.argument("year_of_stadtradeln_event", type=int)
+@click.option("-p", "--path", type=click.Path(), default="/tmp/stadtradeln_data/",
+              help="The directory to store the STADTRADELN dataset in.")
+@click.pass_context
+def download_and_extract(ctx, year_of_stadtradeln_event, download_dir):
+    """Downloads and extracts
+    """
+    year = year_of_stadtradeln_event
+    print(f"Downloading {year} dataset")
+    print("Trying to download file")
+    result = download_dataset(year, destination_path=download_dir)
+    if result == Result.UNKNOWN_DATASET:
+        print("The dataset you requested does not exist")
+        quit(0)
+    elif result == Result.FILE_ALREADY_EXISTS:
+        print("File already exists")
+    elif result == Result.DOWNLOAD_FAILED:
+        print("Download failed")
+        quit(0)
+    else:
+        print("Download succeeded")
+
+    print(f"Extracting {year} dataset")
+    print("Extracting dataset")
+    result = extract_dataset(year)
+    if result == Result.UNKNOWN_DATASET:
+        print("The dataset you requested was not found on your filesystem (print path)")
+    elif result == Result.FAILURE:
+        print("Could not extract thing")
+    else:
+        print("Success!")
+
+
+if __name__ == '__main__':
+    download_and_extract()
