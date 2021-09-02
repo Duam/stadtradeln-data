@@ -27,8 +27,8 @@ class Result(Enum):
 
 @dataclass
 class DownloadResult:
-    status = Result.FAILURE
-    filepath = ""
+    status: Result
+    filepath: str
 
 
 def download_dataset(
@@ -87,8 +87,8 @@ def download_dataset(
 
 @dataclass
 class ExtractResult:
-    status = Result.FAILURE
-    filepath = ""
+    status: Result
+    filepath: str
 
 
 def extract_dataset(
