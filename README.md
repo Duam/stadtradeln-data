@@ -20,3 +20,6 @@ $ echo "Enjoy!"
 ```
 
 (a more elaborate usage section will come as soon as this repository has more functionality)
+
+## See also
+- [teelram-data](https://github.com/barentsen/telraam-data): A friendly Python package to download traffic count data from Telraam.net.
