@@ -1,5 +1,19 @@
+import pandas as pd
 
-import csv
+
+def load_to_pandas(
+        csv_path: str
+) -> pd.DataFrame:
+    """
+    :param csv_path:
+    :returns:
+    """
+    df = pd.read_csv(csv_path)
+    # TODO: Convert first column from linestring to coordinates
+    return df
+
+
+"""
 in_filenames = [
     'verkehrsmengen_2018',
     'verkehrsmengen_2019',
@@ -37,3 +51,4 @@ for filename in in_filenames:
                 if x_min < x and x < x_max:
                     if y_min < y and y < y_max:
                         writer.writerow(row)
+"""
