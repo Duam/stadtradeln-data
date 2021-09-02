@@ -7,6 +7,7 @@ setup(
     use_scm_version=False,
     install_requires=[
         'tqdm',
+        'requests',
         'numpy',
         'pandas'
     ],
