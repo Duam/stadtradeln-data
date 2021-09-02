@@ -3,31 +3,14 @@ import urllib.request
 import requests
 import urllib.parse
 from tqdm import tqdm
-import tarfile
-from enum import Enum
 from dataclasses import dataclass
-
-data_urls = {
-    2018: 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/ECF9DF02-37DC-4268-B017-A7C2CF302006/'
-          'verkehrsmengen_2018.csv.tar.gz',
-    2019: 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/ECF9DF02-37DC-4268-B017-A7C2CF302006/'
-          'verkehrsmengen_2019.csv.tar.gz',
-    2020: 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/ECF9DF02-37DC-4268-B017-A7C2CF302006/'
-          'verkehrsmengen_2020.csv.tar.gz',
-}
-
-
-class Result(Enum):
-    UNKNOWN_DATASET = 0
-    FILE_ALREADY_EXISTS = 1
-    FAILURE = 2
-    SUCCESS = 3
-    SSL_ERROR = 4
+from stadtradeln_data.status import Status
+from stadtradeln_data.stadtradeln_urls import data_urls
 
 
 @dataclass
 class DownloadResult:
-    status: Result
+    status: Status
     filepath: str
 
 
@@ -49,7 +32,7 @@ def download_dataset(
     :returns: An enum telling you if the download was successful or not and (if successful) the resulting filepath.
     """
     if year not in data_urls.keys():
-        return DownloadResult(Result.UNKNOWN_DATASET, "")
+        return DownloadResult(Status.UNKNOWN_DATASET, "")
 
     url = data_urls[year]
     filename = os.path.basename(urllib.parse.urlparse(url).path)
@@ -61,13 +44,13 @@ def download_dataset(
 
     # Immediately return if file already exists
     if os.path.isfile(filepath) and not overwrite:
-        return DownloadResult(Result.FILE_ALREADY_EXISTS, filepath)
+        return DownloadResult(Status.FILE_ALREADY_EXISTS, filepath)
 
     # Download data
     try:
         response = requests.get(url, verify=verify_ca_certificate, stream=True)
     except requests.exceptions.SSLError:
-        return DownloadResult(Result.SSL_ERROR, "")
+        return DownloadResult(Status.SSL_ERROR, "")
 
     total_size_in_bytes = int(response.headers.get('content-length', 0))
     block_size = 10 * 1024  # 10kB
@@ -80,40 +63,6 @@ def download_dataset(
 
     # Check download
     if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-        return DownloadResult(Result.FAILURE, "")
+        return DownloadResult(Status.FAILURE, "")
 
-    return DownloadResult(Result.SUCCESS, filepath)
-
-
-@dataclass
-class ExtractResult:
-    status: Result
-    filepath: str
-
-
-def extract_dataset(
-        year: int,
-        download_path: str = "/tmp/stadtradeln_data/",
-        overwrite: bool = False,
-) -> ExtractResult:
-    """Extracts a dataset and stores the resulting .csv file in the
-    same directory next to the compressed dataset.
-    :year: The dataset's year.
-    :download_path: The directory containing the .tar.gz file.
-    :overwrite: If True, overwrites any already existing file with the same name.
-    :returns: An enum telling you if the extraction was successful or not.
-    """
-    if year not in data_urls.keys():
-        return ExtractResult(Result.UNKNOWN_DATASET, "")
-
-    url = data_urls[year]
-    filepath = f'{download_path}/{os.path.basename(urllib.parse.urlparse(url).path)}'
-
-    # Immediately return if file already exists
-    if os.path.isfile(filepath) and not overwrite:
-        return ExtractResult(Result.FILE_ALREADY_EXISTS, filepath)
-
-    with tarfile.open(filepath) as file:
-        file.extractall(download_path)
-
-    return ExtractResult(Result.SUCCESS, filepath)
+    return DownloadResult(Status.SUCCESS, filepath)

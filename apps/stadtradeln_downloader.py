@@ -1,5 +1,7 @@
 import click
-from stadtradeln_data.raw_data_retrieval import Result, download_dataset, extract_dataset
+from stadtradeln_data.status import Status
+from stadtradeln_data.dataset_downloader import download_dataset
+from stadtradeln_data.dataset_extractor import extract_dataset
 
 
 @click.command()
@@ -25,16 +27,16 @@ def download_and_extract(ctx, year_of_stadtradeln_event, path, overwrite):
             verify_ca_certificate=verify_ca_certificate,
             overwrite=overwrite
         )
-        if download_result.status == Result.UNKNOWN_DATASET:
+        if download_result.status == Status.UNKNOWN_DATASET:
             print("The dataset you requested does not exist, aborting.")
             return
-        elif download_result.status == Result.FILE_ALREADY_EXISTS:
+        elif download_result.status == Status.FILE_ALREADY_EXISTS:
             print(f"File already exists, continuing.")
             retry = False
-        elif download_result.status == Result.FAILURE:
+        elif download_result.status == Status.FAILURE:
             print(f"Download failed, data in \"{download_result.filepath}\" seems corrupted.")
             return
-        elif download_result.status == Result.SSL_ERROR:
+        elif download_result.status == Status.SSL_ERROR:
             print("WARNING: Your CA-certificates could not be verified by the downloader. "
                   "If you do not trust your network, it is advised that you download the "
                   "files from the original BmVI website: "
@@ -45,18 +47,21 @@ def download_and_extract(ctx, year_of_stadtradeln_event, path, overwrite):
             if choice != "Y" and choice != "y":
                 print("Aborting.")
                 return
-        elif download_result.status == Result.SUCCESS:
+        elif download_result.status == Status.SUCCESS:
             retry = False
         else:
+            # TODO: Prompt the user to write an issue
             print("Something unexpectedly went really wrong, sorry.")
             return
     print(f"Dataset is located in \"{download_result.filepath}\".")
 
+    # TODO: filepath has a double backslash in it
+    # like this: /tmp/stadtradeln_data//verkehrsmengen_2019.csv.tar.gz
     print(f"Extracting {year} dataset in \"{download_result.filepath}\".")
     extract_result = extract_dataset(year)
-    if extract_result.status == Result.UNKNOWN_DATASET:
+    if extract_result.status == Status.UNKNOWN_DATASET:
         print(f"The compressed dataset was not found in path \"{extract_result.filepath}\".")
-    elif extract_result.status == Result.FAILURE:
+    elif extract_result.status == Status.FAILURE:
         print("Could not extract the dataset (unknown reason).")
     print(f"Extraction succeeded. Raw data is located in \"{extract_result.filepath}\".")
 
