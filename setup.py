@@ -26,6 +26,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
+            'stadtradeln-downloader = apps.stadtradeln_downloader:download_and_extract'
         ]
     },
 )
