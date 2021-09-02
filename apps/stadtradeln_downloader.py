@@ -1,4 +1,4 @@
-from stadtradeln_data.download import Result, download_dataset, extract_dataset
+from stadtradeln_data.raw_data_retrieval import Result, download_dataset, extract_dataset
 
 print("Trying to download file")
 result = download_dataset(2018)
