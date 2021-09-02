@@ -5,6 +5,7 @@ import urllib.parse
 from tqdm import tqdm
 import tarfile
 from enum import Enum
+from dataclasses import dataclass
 
 data_urls = {
     2018: 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/ECF9DF02-37DC-4268-B017-A7C2CF302006/'
@@ -21,6 +22,13 @@ class Result(Enum):
     FILE_ALREADY_EXISTS = 1
     FAILURE = 2
     SUCCESS = 3
+    SSL_ERROR = 4
+
+
+@dataclass
+class DownloadResult:
+    status = Result.FAILURE
+    filepath = ""
 
 
 def download_dataset(
@@ -28,7 +36,7 @@ def download_dataset(
         destination_path: str = "/tmp/stadtradeln_data/",
         overwrite: bool = False,
         verify_ca_certificate: bool = False,
-) -> Result:
+) -> DownloadResult:
     """Downloads a whole (zipped) STADTRADELN dataset from the database of the
     Bundesministerium für Verkehr und digitale Infrastructure (BmVI)
     and stores it locally. Skips download if it already exists locally.
@@ -38,10 +46,10 @@ def download_dataset(
     :param verify_ca_certificate: Verifies the CA-certificate if True.
         Download may fail if your CA-certificates are not set up properly.
         See https://stackoverflow.com/questions/63210851/python-requests-throwing-sslerror-after-downloading-certificate
-    :returns: An enum telling you if the download was successful or not.
+    :returns: An enum telling you if the download was successful or not and (if successful) the resulting filepath.
     """
     if year not in data_urls.keys():
-        return Result.UNKNOWN_DATASET
+        return DownloadResult(Result.UNKNOWN_DATASET, "")
 
     url = data_urls[year]
     filename = os.path.basename(urllib.parse.urlparse(url).path)
@@ -53,12 +61,16 @@ def download_dataset(
 
     # Immediately return if file already exists
     if os.path.isfile(filepath) and not overwrite:
-        return Result.FILE_ALREADY_EXISTS
+        return DownloadResult(Result.FILE_ALREADY_EXISTS, filepath)
 
     # Download data
-    response = requests.get(url, verify=verify_ca_certificate, stream=True)
+    try:
+        response = requests.get(url, verify=verify_ca_certificate, stream=True)
+    except requests.exceptions.SSLError:
+        return DownloadResult(Result.SSL_ERROR, "")
+
     total_size_in_bytes = int(response.headers.get('content-length', 0))
-    block_size = 1024  # 1kB
+    block_size = 10 * 1024  # 10kB
     progress_bar = tqdm(total=total_size_in_bytes, unit='iB', ncols=100, unit_scale=True)
     with open(filepath, "w+b") as file:
         for data in response.iter_content(block_size):
@@ -68,16 +80,22 @@ def download_dataset(
 
     # Check download
     if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-        return Result.FAILURE
+        return DownloadResult(Result.FAILURE, "")
 
-    return Result.SUCCESS
+    return DownloadResult(Result.SUCCESS, filepath)
+
+
+@dataclass
+class ExtractResult:
+    status = Result.FAILURE
+    filepath = ""
 
 
 def extract_dataset(
         year: int,
         download_path: str = "/tmp/stadtradeln_data/",
         overwrite: bool = False,
-) -> Result:
+) -> ExtractResult:
     """Extracts a dataset and stores the resulting .csv file in the
     same directory next to the compressed dataset.
     :year: The dataset's year.
@@ -86,16 +104,16 @@ def extract_dataset(
     :returns: An enum telling you if the extraction was successful or not.
     """
     if year not in data_urls.keys():
-        return Result.UNKNOWN_DATASET
+        return ExtractResult(Result.UNKNOWN_DATASET, "")
 
     url = data_urls[year]
     filepath = f'{download_path}/{os.path.basename(urllib.parse.urlparse(url).path)}'
 
     # Immediately return if file already exists
     if os.path.isfile(filepath) and not overwrite:
-        return Result.FILE_ALREADY_EXISTS
+        return ExtractResult(Result.FILE_ALREADY_EXISTS, filepath)
 
     with tarfile.open(filepath) as file:
         file.extractall(download_path)
 
-    return Result.SUCCESS
+    return ExtractResult(Result.SUCCESS, filepath)
