@@ -8,6 +8,7 @@ setup(
     install_requires=[
         'tqdm',
         'requests',
+        'pytest',
         'numpy',
         'pandas'
     ],
