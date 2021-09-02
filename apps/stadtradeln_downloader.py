@@ -29,7 +29,7 @@ def download_and_extract(ctx, year_of_stadtradeln_event, path, overwrite):
             print("The dataset you requested does not exist, aborting.")
             return
         elif download_result.status == Result.FILE_ALREADY_EXISTS:
-            print(f"File already exists: \"{download_result.filepath}\", continuing.")
+            print(f"File already exists, continuing.")
             retry = False
         elif download_result.status == Result.FAILURE:
             print(f"Download failed, data in \"{download_result.filepath}\" seems corrupted.")
@@ -45,7 +45,12 @@ def download_and_extract(ctx, year_of_stadtradeln_event, path, overwrite):
             if choice != "Y" and choice != "y":
                 print("Aborting.")
                 return
-    print(f"Download succeeded. Dataset is located in \"{download_result.filepath}\".")
+        elif download_result.status == Result.SUCCESS:
+            retry = False
+        else:
+            print("Something unexpectedly went really wrong, sorry.")
+            return
+    print(f"Dataset is located in \"{download_result.filepath}\".")
 
     print(f"Extracting {year} dataset in \"{download_result.filepath}\".")
     extract_result = extract_dataset(year)
