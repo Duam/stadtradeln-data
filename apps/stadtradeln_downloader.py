@@ -50,8 +50,11 @@ def download_and_extract(ctx, year_of_stadtradeln_event, path, overwrite):
         elif download_result.status == Status.SUCCESS:
             retry = False
         else:
-            # TODO: Prompt the user to write an issue
-            print("Something unexpectedly went really wrong, sorry.")
+            print("Something unexpectedly went really wrong, sorry. "
+                  "Pleas submit an issue with a short description of the steps "
+                  "you made before encountering this error:")
+            print("https://github.com/Duam/stadtradeln-data/issues/new")
+            print("Aborting.")
             return
     print(f"Dataset is located in \"{download_result.filepath}\".")
 
