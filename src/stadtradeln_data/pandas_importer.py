@@ -1,54 +1,29 @@
 import pandas as pd
+from stadtradeln_data.linestring_conversion import (
+    get_coordinates_from_linestring
+)
 
 
 def load_to_pandas(
         csv_path: str
 ) -> pd.DataFrame:
-    """
-    :param csv_path:
-    :returns:
+    """Loads a STADTRADELN dataset into a pandas.DataFrame and converts the
+    single 'edge_geo' column from LINESTRING-format into four separate columns
+    containing latitudes and longitudes of the line's endpoints.
+    :param csv_path: The path to the STADTRADELN csv dataset.
+    :returns: A pandas.DataFrame containing the data.
     """
     df = pd.read_csv(csv_path)
-    # TODO: Convert first column from linestring to coordinates
-    return df
-
-
-"""
-in_filenames = [
-    'verkehrsmengen_2018',
-    'verkehrsmengen_2019',
-    'verkehrsmengen_2020',
-]
-
-x_min = 7.616
-x_max = 8.112
-y_min = 47.87
-y_max = 48.11
-
-for filename in in_filenames:
-    out_data = []
-
-    with open(f'stadtradeln_datasets_raw\\{filename}.csv') as in_csv_file:
-        with open(f'stadtradeln_datasets_raw\\{filename}_reduced.csv', 'w') as out_csv_file:
-
-            reader = csv.reader(in_csv_file, delimiter=',')
-            writer = csv.writer(out_csv_file)
-
-            for row in reader:
-                if row[0] == 'edge_geo':
-                    writer.writerow(row)
-                    continue
-
-                geo_data = row[0]
-                geo_data = geo_data.replace("LINESTRING(", "")
-                geo_data = geo_data.replace(")", "")
-                start_end = geo_data.split(',')
-                start_latlon = start_end[0].split(" ")
-                occurances = row[1]
-
-                x = float(start_latlon[0])
-                y = float(start_latlon[1])
-                if x_min < x and x < x_max:
-                    if y_min < y and y < y_max:
-                        writer.writerow(row)
-"""
+    # TODO: Can this conversion be made more elegant?
+    df.edge_geo = [get_coordinates_from_linestring(s) for s in df.edge_geo]
+    latitude_start = [tpl[0][0] for tpl in df.edge_geo]
+    longitude_start = [tpl[0][1] for tpl in df.edge_geo]
+    latitude_end = [tpl[1][0] for tpl in df.edge_geo]
+    longitude_end = [tpl[1][1] for tpl in df.edge_geo]
+    return pd.DataFrame({
+        'latitude_start': latitude_start,
+        'longitude_start': longitude_start,
+        'latitude_end': latitude_end,
+        'longitude_end': longitude_end,
+        'occurences': df.occurences
+    })
