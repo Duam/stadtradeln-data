@@ -9,8 +9,7 @@ def get_coordinates_from_linestring(
         (including the quotation marks).
     :returns: Two coordinate-pairs having latitude and longitude, each.
     """
-    endpoints = linestring.replace("\"LINESTRING(", "").replace(")\"", "").split(",")
-    print(endpoints)
+    endpoints = linestring.replace("LINESTRING(", "").replace(")", "").split(",")
     start_coordinate = tuple([float(coord) for coord in endpoints[0].split(" ")])
     end_coordinate = tuple([float(coord) for coord in endpoints[1].split(" ")])
     return start_coordinate, end_coordinate
@@ -26,4 +25,4 @@ def get_linestring_from_coordinates(
     :returns: A string formatted like "LINESTRING(<latitude1> <longitude2>,<latitude2> <longitude2>)"
         (including the quotation marks).
     """
-    return f'"LINESTRING({start_coordinate[0]} {start_coordinate[1]},{end_coordinate[0]} {end_coordinate[1]})"'
+    return f'LINESTRING({start_coordinate[0]} {start_coordinate[1]},{end_coordinate[0]} {end_coordinate[1]})'
