@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import copy
-from stadtradeln_data.dataset_clipper import clip_to_rectangle
+from stadtradeln_data.dataset_clipper import clip_dataset
 from typing import Tuple
 
 
@@ -48,6 +48,6 @@ def test_get_linestring_from_coordinates(
         longitude_lim: Tuple[float, float],
 ):
     dataset_copy = copy.deepcopy(dataset)  # Some pandas methods modify the original DataFrame
-    clipped_dataset = clip_to_rectangle(dataset, latitude_lim, longitude_lim)
+    clipped_dataset = clip_dataset(dataset, latitude_lim, longitude_lim)
     expected_clipped_dataset = clip(dataset_copy, latitude_lim, longitude_lim)
     assert expected_clipped_dataset.equals(clipped_dataset)

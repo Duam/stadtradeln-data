@@ -1,8 +1,16 @@
 import pandas as pd
 from typing import Tuple
+from dataclasses import dataclass
+from stadtradeln_data.status import Status
 
 
-def clip_to_rectangle(
+@dataclass
+class ClipResult:
+    status: Status
+    filepath: str
+
+
+def clip_dataset(
         df: pd.DataFrame,
         latitude_lim: Tuple[float, float],
         longitude_lim: Tuple[float, float],
