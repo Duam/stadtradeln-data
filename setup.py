@@ -1,4 +1,10 @@
+import os
 from setuptools import setup, find_packages
+
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 setup(
     name='stadtradeln_data',
@@ -16,17 +22,28 @@ setup(
     python_requires='>=3.6',
     package_dir={'': 'src'},
     packages=find_packages('src'),
+    #py_modules=['stadtradeln_data_manager.py'],
     license="MIT",
+    url="https://github.com/Duam/stadtradeln-data",
     author="Paul Daum",
     author_email="paul.daum@posteo.de",
-    description="A python package for downloading bicycle traffic count data from the STADTRADELN database",
+    description="A python package for downloading, extracting and clipping bicycle traffic count data "
+                "from the STADTRADELN database",
+    long_description=read('README.md'),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
+        "Topic :: Utilities",
+        "License :: OSI Approved :: MIT License",
+        "Intended Audience :: Science/Research",
+        "Natural Language :: English",
+        "Operating System :: Unix",
+        "Topic :: Scientific/Engineering :: Information Analysis",
+        "Typing :: Typed"
     ],
     entry_points={
         'console_scripts': [
-            'stadtradeln-downloader = apps.stadtradeln_downloader:download_and_extract'
+            'stadtradeln-data = apps.stadtradeln_data_manager:download_and_extract'
         ]
     },
 )
