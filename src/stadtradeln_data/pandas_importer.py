@@ -33,7 +33,7 @@ def write_csv(
         df: pd.DataFrame,
         csv_path: str
 ) -> None:
-    """
+    """ TODO: Write documentation
     :param df:
     :param csv_path:
     """
@@ -43,11 +43,10 @@ def write_csv(
             (row.latitude_end, row.longitude_end))
         for row in df.itertuples()
     ]
-    occurences = df.occurences
     remaining_data = df[set(df.columns).difference(
         {'latitude_start', 'longitude_start', 'latitude_end', 'longitude_end', 'occurences'})]
     pd.DataFrame({
         'edge_geo': lines,
-        'occurences': occurences,
+        'occurences': df.occurences,
         **dict(remaining_data)
     }).to_csv(csv_path, index=False)
