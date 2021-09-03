@@ -1,26 +1,31 @@
 from typing import Tuple
+from collections import namedtuple
+
+Coordinate = namedtuple('Coordinate', ['latitude', 'longitude'])
 
 
 def get_coordinates_from_linestring(
         linestring: str
-) -> Tuple[Tuple[float, float], Tuple[float, float]]:
+) -> Tuple[Coordinate, Coordinate]:
     """Converts a GIS-readable linestring into two coordinate-pairs describing the line's endpoints.
     :param linestring: A string formatted like "LINESTRING(<latitude1> <longitude2>, <latitude2> <longitude2>)".
     :returns: Two coordinate-pairs having latitude and longitude, each.
     """
     endpoints = linestring.replace("LINESTRING(", "").replace(")", "").split(",")
-    start_coordinate = tuple([float(coord) for coord in endpoints[0].split(" ")])
-    end_coordinate = tuple([float(coord) for coord in endpoints[1].split(" ")])
+    start_coordinate = Coordinate(*[float(coord) for coord in endpoints[0].split(" ")])
+    end_coordinate = Coordinate(*[float(coord) for coord in endpoints[1].split(" ")])
     return start_coordinate, end_coordinate
 
 
 def get_linestring_from_coordinates(
-        start_coordinate: Tuple[float, float],
-        end_coordinate: Tuple[float, float]
+        start: Coordinate,
+        end: Coordinate
 ) -> str:
     """Converts two coordinate-pairs into a GIS-readable linestring-format.
-    :param start_coordinate: Latitude and longitude of the line's start point.
-    :param end_coordinate: Latitude and longitude of the line's end point.
+    :param start: Latitude and longitude of the line's start point.
+    :param end: Latitude and longitude of the line's end point.
     :returns: A string formatted like "LINESTRING(<latitude1> <longitude2>,<latitude2> <longitude2>)".
     """
-    return f'LINESTRING({start_coordinate[0]} {start_coordinate[1]},{end_coordinate[0]} {end_coordinate[1]})'
+    start = Coordinate(float(start[0]), float(start[1]))
+    end = Coordinate(float(end[0]), float(end[1]))
+    return f'LINESTRING({start.latitude} {start.longitude},{end.latitude} {end.longitude})'
