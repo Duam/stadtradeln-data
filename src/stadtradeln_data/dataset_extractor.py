@@ -1,7 +1,5 @@
-import os
-import urllib.request
-import urllib.parse
 import tarfile
+import pathlib
 from stadtradeln_data.status import Status
 from stadtradeln_data.stadtradeln_urls import data_urls
 from dataclasses import dataclass
@@ -28,14 +26,16 @@ def extract_dataset(
     if year not in data_urls.keys():
         return ExtractResult(Status.UNKNOWN_DATASET, "")
 
-    url = data_urls[year]
-    filepath = f'{download_path}/{os.path.basename(urllib.parse.urlparse(url).path)}'
+    filename_csvtargz = pathlib.Path(data_urls[year]).name
+    filepath_csvtargz = pathlib.Path(download_path, filename_csvtargz)
+    filepath_csv = filepath_csvtargz.with_suffix('').with_suffix('')
 
     # Immediately return if file already exists
-    if os.path.isfile(filepath) and not overwrite:
-        return ExtractResult(Status.FILE_ALREADY_EXISTS, filepath)
+    if filepath_csv.is_file() and not overwrite:
+        return ExtractResult(Status.FILE_ALREADY_EXISTS, filepath_csv)
 
-    with tarfile.open(filepath) as file:
+    # Extract file
+    with tarfile.open(filepath_csvtargz) as file:
         file.extractall(download_path)
 
-    return ExtractResult(Status.SUCCESS, filepath)
+    return ExtractResult(Status.SUCCESS, filepath_csv)

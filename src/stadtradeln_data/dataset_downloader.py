@@ -1,7 +1,5 @@
-import os
-import urllib.request
 import requests
-import urllib.parse
+import pathlib
 from tqdm import tqdm
 from dataclasses import dataclass
 from stadtradeln_data.status import Status
@@ -35,15 +33,16 @@ def download_dataset(
         return DownloadResult(Status.UNKNOWN_DATASET, "")
 
     url = data_urls[year]
-    filename = os.path.basename(urllib.parse.urlparse(url).path)
-    filepath = f'{destination_path}/{filename}'
+    destination_path = pathlib.Path(destination_path)
+    filename = pathlib.Path(url).name
+    filepath = pathlib.Path(destination_path, filename)
 
     # Create destination if it doesn't exist
-    if not os.path.exists(destination_path):
-        os.mkdir(destination_path)
+    if not destination_path.is_dir():
+        destination_path.mkdir(parents=True)
 
     # Immediately return if file already exists
-    if os.path.isfile(filepath) and not overwrite:
+    if filepath.is_file() and not overwrite:
         return DownloadResult(Status.FILE_ALREADY_EXISTS, filepath)
 
     # Download data

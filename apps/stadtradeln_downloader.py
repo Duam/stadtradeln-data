@@ -55,15 +55,15 @@ def download_and_extract(ctx, year_of_stadtradeln_event, path, overwrite):
             return
     print(f"Dataset is located in \"{download_result.filepath}\".")
 
-    # TODO: filepath has a double backslash in it
-    # like this: /tmp/stadtradeln_data//verkehrsmengen_2019.csv.tar.gz
     print(f"Extracting {year} dataset in \"{download_result.filepath}\".")
     extract_result = extract_dataset(year)
     if extract_result.status == Status.UNKNOWN_DATASET:
         print(f"The compressed dataset was not found in path \"{extract_result.filepath}\".")
     elif extract_result.status == Status.FAILURE:
         print("Could not extract the dataset (unknown reason).")
-    print(f"Extraction succeeded. Raw data is located in \"{extract_result.filepath}\".")
+    elif extract_result.status == Status.FILE_ALREADY_EXISTS:
+        print("Extracted file already exists, continuing.")
+    print(f"Raw data is located in \"{extract_result.filepath}\".")
 
 
 if __name__ == '__main__':
