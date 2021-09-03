@@ -1,16 +1,22 @@
+import numpy as np
 import pathlib
+from stadtradeln_data.constants import default_cache_path
 from stadtradeln_data.status import Status
 from stadtradeln_data.dataset_downloader import DownloadResult, download_dataset
 from stadtradeln_data.dataset_extractor import ExtractResult, extract_dataset
+from stadtradeln_data.dataset_clipper import ClipResult, clip_dataset
 
 
 def download(
         year: int,
-        path: pathlib.Path,
-        overwrite: bool,
+        path: pathlib.Path = default_cache_path,
+        overwrite: bool = False,
 ) -> DownloadResult:
     """
-
+    :param year:
+    :param path:
+    :param overwrite:
+    :returns:
     """
     print(f"Downloading {year} dataset to path \"{path}\"")
     retry = True
@@ -57,13 +63,17 @@ def download(
 
 def extract(
         year: int,
-        path: pathlib.Path,
+        path: pathlib.Path = default_cache_path,
+        overwrite: bool = False,
 ) -> ExtractResult:
     """
-
+    :param year:
+    :param path:
+    :param overwrite:
+    :returns:
     """
     print(f"Extracting {year} dataset in \"{path}\".")
-    extract_result = extract_dataset(year)
+    extract_result = extract_dataset(year, path, overwrite)
     if extract_result.status == Status.UNKNOWN_DATASET:
         print(f"The compressed dataset was not found in path \"{extract_result.filepath}\".")
         return extract_result
@@ -74,3 +84,25 @@ def extract(
         print("Extracted file already exists, continuing.")
     print(f"Raw data is located in \"{extract_result.filepath}\".")
     return extract_result
+
+
+def clip(
+        year: int,
+        path: pathlib.Path = default_cache_path,
+        overwrite: bool = False,
+        latitude_min: float = -np.inf,
+        latitude_max: float = np.inf,
+        longitude_min: float = -np.inf,
+        longitude_max: float = np.inf,
+) -> None:
+    """
+    :param year:
+    :param path:
+    :param overwrite:
+    :param latitude_min:
+    :param latitude_max:
+    :param longitude_min:
+    :param longitude_max:
+    :returns:
+    """
+    raise NotImplementedError
