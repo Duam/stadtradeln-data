@@ -9,4 +9,4 @@ data_urls = {
           'verkehrsmengen_2020.csv.tar.gz',
 }
 
-default_path = pathlib.Path('/tmp/stadtradeln_data/')
+default_cache_path = pathlib.Path('/tmp/stadtradeln_data/')

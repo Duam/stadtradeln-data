@@ -1,7 +1,8 @@
 import tarfile
 import pathlib
+from stadtradeln_data.constants import default_cache_path
 from stadtradeln_data.status import Status
-from stadtradeln_data.stadtradeln_urls import data_urls
+from stadtradeln_data.constants import data_urls
 from dataclasses import dataclass
 
 
@@ -13,7 +14,7 @@ class ExtractResult:
 
 def extract_dataset(
         year: int,
-        download_path: str = "/tmp/stadtradeln_data/",
+        download_path: str = default_cache_path,
         overwrite: bool = False,
 ) -> ExtractResult:
     """Extracts a dataset and stores the resulting .csv file in the

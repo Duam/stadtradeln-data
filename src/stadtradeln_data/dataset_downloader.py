@@ -3,7 +3,7 @@ import pathlib
 from tqdm import tqdm
 from dataclasses import dataclass
 from stadtradeln_data.status import Status
-from stadtradeln_data.stadtradeln_urls import data_urls
+from stadtradeln_data.constants import data_urls
 
 
 @dataclass
