@@ -24,6 +24,7 @@ $ echo "Enjoy!"
 
 ## See also
 - [teelram-data](https://github.com/barentsen/telraam-data): A friendly Python package to download traffic count data from Telraam.net. (not by me)
+- [MOVEBIS](https://www.bmvi.de/SharedDocs/DE/Artikel/DG/mfund-projekte/verbesserung-der-fahrradinfrastruktur-movebis.html)
 
 ## Notes
 - This is a third-party package not officially affiliated with the STADTRADELN project.
