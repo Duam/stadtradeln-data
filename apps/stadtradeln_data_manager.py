@@ -78,7 +78,17 @@ def clip(ctx, year_of_stadtradeln_event, path, overwrite, latitude_min, latitude
     """
     print(f"{year_of_stadtradeln_event}, {path}, {overwrite}, {latitude_min}, {latitude_max}, {longitude_min}, "
           f"{longitude_max}")
-    pass
+    clip_result = clip_dataset(
+        year=year_of_stadtradeln_event,
+        path=path,
+        output_path=None,
+        overwrite=overwrite,
+        latitude_min=latitude_min,
+        latitude_max=latitude_max,
+        longitude_min=longitude_min,
+        longitude_max=longitude_max)
+    if not clip_result.status != Status.SUCCESS or not clip_result.status != Status.FILE_ALREADY_EXISTS:
+        pass
 
 
 if __name__ == '__main__':
