@@ -24,7 +24,7 @@ def load_csv(
         'longitude_start': [coord.longitude for coord in start_points],
         'latitude_end': [coord.latitude for coord in end_points],
         'longitude_end': [coord.longitude for coord in end_points],
-        'occurences': df.occurences,
+        'occurences': df.occurrences,
         **dict(remaining_data)
     })
 
