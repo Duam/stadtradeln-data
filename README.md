@@ -4,9 +4,9 @@ A Python package to download bicycle traffic count data from the [STADTRADELN](h
 #### Folder structure
 ```
 ./
- ├ apps/                          # Executable files
  ├ src/
- │ └ stadtradeln_data/            # Source code, library 
+ │ ├ stadtradeln_data_tools/      # The API for processing the datasets
+ │ └ stadtradeln_data_manager/    # A command line interface for handling datasets manually
  └ tests/                         # Unit-tests
 ```
 
@@ -17,7 +17,7 @@ $ cd python-stadtradeln-data
 $ virtualenv venv
 $ source venv/bin/activate
 $ pip install -e .
-$ echo "Enjoy!"
+$ stadtradeln-data-manager --help
 ```
 
 (a more elaborate usage section will come as soon as this repository has more functionality)
