@@ -1,5 +1,5 @@
 import pandas as pd
-from stadtradeln_data.linestring_conversion import (
+from stadtradeln_data_tools.linestring_conversion import (
     get_linestring_from_coordinates,
     get_coordinates_from_linestring
 )

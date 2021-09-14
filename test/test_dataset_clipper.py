@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import copy
-from stadtradeln_data.dataset_clipper import clip_dataset
+from stadtradeln_data_tools.dataset_clipper import clip_dataset
 from typing import Tuple
 
 

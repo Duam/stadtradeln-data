@@ -1,8 +1,8 @@
 import click
 import numpy as np
-from stadtradeln_data.constants import default_cache_path
-from stadtradeln_data.status import Status
-from stadtradeln_data.cli_utils import (
+from stadtradeln_data_tools.constants import default_cache_path
+from stadtradeln_data_tools.status import Status
+from stadtradeln_data_manager.cli_utils import (
     download as download_dataset,
     extract as extract_dataset,
     clip as clip_dataset
@@ -27,7 +27,7 @@ def cli():
 def download(ctx, year_of_stadtradeln_event, path, overwrite, extract):
     """Downloads and extracts a specified STADTRADELN dataset. The dataset
     is determined using the year it was collected. By default, the dataset
-    is stored on your local computer in the directory /tmp/stadtradeln_data/.
+    is stored on your local computer in the directory /tmp/stadtradeln_data_tools/.
     """
     year = year_of_stadtradeln_event
     download_result = download_dataset(year_of_stadtradeln_event, path, overwrite)

@@ -7,7 +7,7 @@ def read(fname):
 
 
 setup(
-    name='stadtradeln_data',
+    name='stadtradeln_data_tools',
     version="0.0.1",
     setup_requires=['setuptools'],
     use_scm_version=False,
@@ -22,7 +22,7 @@ setup(
     python_requires='>=3.6',
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    #py_modules=['stadtradeln_data_manager.py'],
+    #py_modules=['__main__.py'],
     license="MIT",
     url="https://github.com/Duam/stadtradeln-data",
     author="Paul Daum",
@@ -43,7 +43,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'stadtradeln-data = apps.stadtradeln_data_manager:download_and_extract'
+            'stadtradeln-data-manager = stadtradeln_data_manager.__main__:cli'
         ]
     },
 )

@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import Tuple
 from dataclasses import dataclass
-from stadtradeln_data.status import Status
+from stadtradeln_data_tools.status import Status
 
 
 @dataclass

@@ -1,8 +1,8 @@
 import tarfile
 import pathlib
-from stadtradeln_data.constants import default_cache_path
-from stadtradeln_data.status import Status
-from stadtradeln_data.constants import data_urls
+from stadtradeln_data_tools.constants import default_cache_path
+from stadtradeln_data_tools.status import Status
+from stadtradeln_data_tools.constants import data_urls
 from dataclasses import dataclass
 
 

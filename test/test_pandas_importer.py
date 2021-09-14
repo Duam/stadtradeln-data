@@ -1,7 +1,7 @@
 import os
 import pytest
 import pandas as pd
-from stadtradeln_data.pandas_importer import load_csv, write_csv
+from stadtradeln_data_tools.pandas_importer import load_csv, write_csv
 
 
 @pytest.fixture
