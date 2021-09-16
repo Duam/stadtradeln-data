@@ -20,7 +20,7 @@ def download_dataset(
 ) -> DownloadResult:
     """Downloads a whole (zipped) STADTRADELN dataset from the database of the
     Bundesministerium für Verkehr und digitale Infrastructure (BmVI)
-    and stores it locally. Skips download if it already exists locally.
+    and stores it locally.
     :param url: The URL pointing to the desired dataset.
     :param destination_path: The download destination directory.
     :param overwrite: If set, overwrites the local file.
@@ -33,23 +33,24 @@ def download_dataset(
     filename = pathlib.Path(url).name
     filepath = pathlib.Path(destination_path, filename)
 
-    # Create destination if it doesn't exist
     if not destination_path.is_dir():
         destination_path.mkdir(parents=True)
 
-    # Immediately return if file already exists
     if filepath.is_file() and not overwrite:
         return DownloadResult(Status.FILE_ALREADY_EXISTS, filepath)
 
-    # Download data
+    # Get download metadata
     try:
         response = requests.get(url, verify=verify_ca_certificate, stream=True)
     except requests.exceptions.SSLError:
         return DownloadResult(Status.SSL_ERROR, "")
 
+    # Create the progress bar
     total_size_in_bytes = int(response.headers.get('content-length', 0))
     block_size = 10 * 1024  # 10kB
     progress_bar = tqdm(total=total_size_in_bytes, unit='iB', ncols=100, unit_scale=True)
+
+    # Download dataset
     with open(filepath, "w+b") as file:
         for data in response.iter_content(block_size):
             progress_bar.update(len(data))
