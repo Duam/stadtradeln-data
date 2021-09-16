@@ -1,15 +1,6 @@
 import pathlib
 
 data_urls = {
-    2018: 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/ECF9DF02-37DC-4268-B017-A7C2CF302006/'
-          'verkehrsmengen_2018.csv.tar.gz',
-    2019: 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/ECF9DF02-37DC-4268-B017-A7C2CF302006/'
-          'verkehrsmengen_2019.csv.tar.gz',
-    2020: 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/ECF9DF02-37DC-4268-B017-A7C2CF302006/'
-          'verkehrsmengen_2020.csv.tar.gz',
-}
-
-all_data_urls = {
     2018: {
         'verkehrsmengen': 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/'
                           'ECF9DF02-37DC-4268-B017-A7C2CF302006/verkehrsmengen_2018.csv.tar.gz',
@@ -20,7 +11,7 @@ all_data_urls = {
         'verkehrsmengen': 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/'
                           'ECF9DF02-37DC-4268-B017-A7C2CF302006/verkehrsmengen_2019.csv.tar.gz',
         'geschwindigkeiten': 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/'
-                             '33427A5A-0ADB-40B1-8A1A-390B67B0380B/geschwindigkeiten_2020.csv.tar.gz'
+                             '33427A5A-0ADB-40B1-8A1A-390B67B0380B/geschwindigkeiten_2019.csv.tar.gz'
     },
     2020: {
         'verkehrsmengen': 'https://www.mcloud.de/downloads/ingrid-group_ige-iplug-mcloud/'
@@ -30,5 +21,5 @@ all_data_urls = {
     }
 }
 
-default_cache_path = pathlib.Path('/tmp/stadtradeln_data/')
-default_clipped_output_path = pathlib.Path(default_cache_path, "clipped/")
+default_cache_dir = pathlib.Path('/tmp/stadtradeln_data/')
+default_clipped_output_dir = pathlib.Path(default_cache_dir, "clipped/")
