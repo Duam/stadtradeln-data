@@ -3,7 +3,7 @@ import pathlib
 from tqdm import tqdm
 from dataclasses import dataclass
 from stadtradeln_data_tools.status import Status
-from stadtradeln_data_tools.constants import data_urls
+from stadtradeln_data_tools.constants import default_cache_dir
 
 
 @dataclass
@@ -13,15 +13,15 @@ class DownloadResult:
 
 
 def download_dataset(
-        year: int,
-        destination_path: str = "/tmp/stadtradeln_data_tools/",
+        url: str,
+        destination_path: str = default_cache_dir,
         overwrite: bool = False,
         verify_ca_certificate: bool = False,
 ) -> DownloadResult:
     """Downloads a whole (zipped) STADTRADELN dataset from the database of the
     Bundesministerium für Verkehr und digitale Infrastructure (BmVI)
     and stores it locally. Skips download if it already exists locally.
-    :param year: The year of the STADTRADELN event.
+    :param url: The URL pointing to the desired dataset.
     :param destination_path: The download destination directory.
     :param overwrite: If set, overwrites the local file.
     :param verify_ca_certificate: Verifies the CA-certificate if True.
@@ -29,10 +29,6 @@ def download_dataset(
         See https://stackoverflow.com/questions/63210851/python-requests-throwing-sslerror-after-downloading-certificate
     :returns: An enum telling you if the download was successful or not and (if successful) the resulting filepath.
     """
-    if year not in data_urls.keys():
-        return DownloadResult(Status.UNKNOWN_DATASET, "")
-
-    url = data_urls[year]
     destination_path = pathlib.Path(destination_path)
     filename = pathlib.Path(url).name
     filepath = pathlib.Path(destination_path, filename)
