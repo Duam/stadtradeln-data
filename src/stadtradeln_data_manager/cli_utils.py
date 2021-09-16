@@ -1,6 +1,6 @@
 import numpy as np
 import pathlib
-from stadtradeln_data_tools.constants import default_cache_path, default_clipped_output_path, data_urls
+from stadtradeln_data_tools.constants import default_cache_dir, data_urls
 from stadtradeln_data_tools.status import Status
 from stadtradeln_data_tools.dataset_downloader import DownloadResult, download_dataset
 from stadtradeln_data_tools.dataset_extractor import ExtractResult, extract_dataset
@@ -10,22 +10,28 @@ from stadtradeln_data_tools.pandas_importer import load_csv, write_csv
 
 def download(
         year: int,
-        path: pathlib.Path = default_cache_path,
-        overwrite: bool = False,
+        dataset_type: str,
+        download_dir: pathlib.Path = default_cache_dir,
 ) -> DownloadResult:
     """
     :param year:
-    :param path:
-    :param overwrite:
+    :param dataset_type:
+    :param download_dir:
     :returns:
     """
-    print(f"Downloading {year} dataset to path \"{path}\"")
+    if year not in data_urls.keys():
+        return DownloadResult(Status.UNKNOWN_DATASET, "")
+
+    dataset_url = data_urls[year][dataset_type]
+    dataset_filename = pathlib.Path(dataset_url).name
+    print(f"Downloading {year} dataset to \"{download_dir / dataset_filename}\"")
     retry = True
     verify_ca_certificate = True
+    overwrite = False
     while retry:
         download_result = download_dataset(
-            year,
-            destination_path=path,
+            dataset_url,
+            destination_path=download_dir,
             verify_ca_certificate=verify_ca_certificate,
             overwrite=overwrite
         )
@@ -33,8 +39,11 @@ def download(
             print("The dataset you requested does not exist, aborting.")
             return download_result
         elif download_result.status == Status.FILE_ALREADY_EXISTS:
-            print(f"File already exists, continuing.")
-            retry = False
+            choice = input("Dataset already exists on your local disc. Download anyway? (Y/n) ")
+            overwrite = True
+            if choice != "Y" and choice != "y":
+                print("Continuing without download.")
+                return download_result
         elif download_result.status == Status.FAILURE:
             print(f"Download failed, data in \"{download_result.filepath}\" seems corrupted.")
             return download_result
@@ -43,8 +52,8 @@ def download(
                   "If you do not trust your network, it is advised that you download the "
                   "files from the original BmVI website: "
                   "https://www.mcloud.de/web/guest/suche/-/results/detail/ECF9DF02-37DC-4268-B017-A7C2CF302006 "
-                  f"and manually move them to \"{path}\"")
-            choice = input("Retry without certificate verification (Y/n)? ")
+                  f"and manually move them to \"{download_dir}\"")
+            choice = input("Retry without certificate verification? (Y/n) ")
             verify_ca_certificate = False
             if choice != "Y" and choice != "y":
                 print("Aborting.")
@@ -58,28 +67,26 @@ def download(
             print("https://github.com/Duam/stadtradeln-data/issues/new")
             print("Aborting.")
             return download_result
-    print(f"Dataset is located in \"{download_result.filepath}\".")
+    print(f"Compressed dataset is located in \"{download_result.filepath}\".")
     return download_result
 
 
 def extract(
-        year: int,
-        path: pathlib.Path = default_cache_path,
-        overwrite: bool = False,
+        tar_path: pathlib.Path,
+        output_dir: pathlib.Path = None,
 ) -> ExtractResult:
+    """Extracts a .csv.tar.gz dataset.
+    :param tar_path: The path of the compressed dataset (.csv.tar.gz)
+    :param output_dir: The directory that the file should be extracted to.
+    :returns: An object containing information about the extraction result.
     """
-    :param year:
-    :param path:
-    :param overwrite:
-    :returns:
-    """
-    print(f"Extracting {year} dataset in \"{path}\".")
-    extract_result = extract_dataset(year, path, overwrite)
+    print(f"Extracting dataset in \"{tar_path}\".")
+    extract_result = extract_dataset(tar_path, output_dir)
     if extract_result.status == Status.UNKNOWN_DATASET:
-        print(f"The compressed dataset was not found in path \"{extract_result.filepath}\".")
+        print(f"The compressed dataset was not found in \"{extract_result.filepath}\".")
         return extract_result
     elif extract_result.status == Status.FAILURE:
-        print("Could not extract the dataset (unknown reason).")
+        print(f"Could not extract the dataset in \"{extract_result.filepath}\".")
         return extract_result
     elif extract_result.status == Status.FILE_ALREADY_EXISTS:
         print("Extracted file already exists, continuing.")
@@ -88,37 +95,29 @@ def extract(
 
 
 def clip(
-        year: int,
-        path: pathlib.Path = default_cache_path,
-        output_path: pathlib.Path = None,
-        overwrite: bool = False,
+        filepath: pathlib.Path,
+        output_filepath: pathlib.Path = None,
         latitude_min: float = -np.inf,
         latitude_max: float = np.inf,
         longitude_min: float = -np.inf,
         longitude_max: float = np.inf,
 ) -> ClipResult:
     """
-    :param year:
-    :param path:
-    :param output_path:
-    :param overwrite:
+    :param filepath:
+    :param output_filepath:
     :param latitude_min:
     :param latitude_max:
     :param longitude_min:
     :param longitude_max:
     :returns:
     """
-    print(f"Clipping {year} dataset in \"{path}\".")
+    print(f"Clipping dataset \"{filepath}\".")
     print("Chosen geographical region:")
     print(f"\t{latitude_min} <= latitude <= {latitude_max}")
     print(f"\t{longitude_min} <= longitude <= {longitude_max}")
-    filename = pathlib.Path(data_urls[year]).with_suffix('').with_suffix('').name
-    filepath = pathlib.Path(path, filename)
-    pure_filename = pathlib.Path(filename).with_suffix('')
-
+    pure_filename = filepath.with_suffix('').name
     output_filename = pathlib.Path(f"{pure_filename}_clipped.csv")
-    output_path = pathlib.Path(output_path) if output_path is not None else pathlib.Path(path)
-    output_filepath = pathlib.Path(output_path, output_filename)
+    output_filepath = output_filepath if output_filepath is not None else filepath.parent / output_filename
 
     print("Loading & Clipping dataset. May take a while..")
     df = load_csv(filepath)
@@ -126,8 +125,8 @@ def clip(
 
     print(f"Writing clipped dataset to \"{output_filepath}\".")
     # Create output directory if it doesn't exist
-    if not output_path.is_dir():
-        output_path.mkdir(parents=True)
+    if not output_filepath.parent.is_dir():
+        output_filepath.parent.mkdir(parents=True)
 
     write_csv(df_clipped, output_filepath)
     return ClipResult(Status.SUCCESS, "")
