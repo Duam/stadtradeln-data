@@ -1,8 +1,6 @@
 import tarfile
 import pathlib
-from stadtradeln_data_tools.constants import default_cache_path
 from stadtradeln_data_tools.status import Status
-from stadtradeln_data_tools.constants import data_urls
 from dataclasses import dataclass
 
 
@@ -13,30 +11,28 @@ class ExtractResult:
 
 
 def extract_dataset(
-        year: int,
-        download_path: str = default_cache_path,
-        overwrite: bool = False,
+        tar_path: pathlib.Path,
+        output_dir: pathlib.Path = None,
 ) -> ExtractResult:
-    """Extracts a dataset and stores the resulting .csv file in the
-    same directory next to the compressed dataset.
-    :year: The dataset's year.
-    :download_path: The directory containing the .tar.gz file.
-    :overwrite: If True, overwrites any already existing file with the same name.
+    """Extracts a .csv.tar.gz dataset.
+    :tar_path: The path of the compressed dataset (.tar.gz).
+    :output_dir: The directory that the files should be extracted to.
     :returns: An enum telling you if the extraction was successful or not.
     """
-    if year not in data_urls.keys():
-        return ExtractResult(Status.UNKNOWN_DATASET, "")
+    filepath = tar_path.with_suffix('').with_suffix('')
+    output_dir = output_dir if output_dir is not None else tar_path.parent
+    output_filepath = output_dir / filepath.name
 
-    filename_csvtargz = pathlib.Path(data_urls[year]).name
-    filepath_csvtargz = pathlib.Path(download_path, filename_csvtargz)
-    filepath_csv = filepath_csvtargz.with_suffix('').with_suffix('')
+    if not tar_path.exists():
+        return ExtractResult(Status.UNKNOWN_DATASET, tar_path)
 
-    # Immediately return if file already exists
-    if filepath_csv.is_file() and not overwrite:
-        return ExtractResult(Status.FILE_ALREADY_EXISTS, filepath_csv)
+    if not tarfile.is_tarfile(tar_path):
+        return ExtractResult(Status.FAILURE, tar_path)
 
-    # Extract file
-    with tarfile.open(filepath_csvtargz) as file:
-        file.extractall(download_path)
+    if output_filepath.is_file():
+        return ExtractResult(Status.FILE_ALREADY_EXISTS, output_filepath)
 
-    return ExtractResult(Status.SUCCESS, filepath_csv)
+    with tarfile.open(tar_path) as file:
+        file.extractall(output_dir)
+
+    return ExtractResult(Status.SUCCESS, output_filepath)
