@@ -39,8 +39,8 @@ def write_csv(
     """
     lines = [
         get_linestring_from_coordinates(
-            (row.latitude_start, row.longitude_start),
-            (row.latitude_end, row.longitude_end))
+            (row["latitude_start"], row["longitude_start"]),
+            (row["latitude_end"], row["longitude_end"]))
         for row in df.itertuples()
     ]
     remaining_data = df[set(df.columns).difference(
