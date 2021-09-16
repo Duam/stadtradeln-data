@@ -15,8 +15,8 @@ def clip_dataset(
         latitude_lim: Tuple[float, float],
         longitude_lim: Tuple[float, float],
 ) -> pd.DataFrame:
-    """Clips the given STADTRADELN dataset to a desired rectangular geographic region.
-    :param df: The STADTRADELN dataset.
+    """Clips the given dataset to a desired rectangular geographic region.
+    :param df: The dataset.
     :param latitude_lim: A tuple containing minimum and maximum allowed latitude values.
     :param longitude_lim: A tuple containing minimum and maximum allowed longitude values.
     :returns: The clipped dataset.
