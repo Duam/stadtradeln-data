@@ -115,8 +115,7 @@ def clip(
     print("Chosen geographical region:")
     print(f"\t{latitude_min} <= latitude <= {latitude_max}")
     print(f"\t{longitude_min} <= longitude <= {longitude_max}")
-    pure_filename = filepath.with_suffix('').name
-    output_filename = pathlib.Path(f"{pure_filename}_clipped.csv")
+    output_filename = pathlib.Path(f"{filepath.with_suffix('').name}_clipped.csv")
     output_filepath = output_filepath if output_filepath is not None else filepath.parent / output_filename
 
     print("Loading & Clipping dataset. May take a while..")
