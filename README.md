@@ -20,7 +20,12 @@ $ pip install -e .
 $ stadtradeln-data-manager --help
 ```
 
-(a more elaborate usage section will come as soon as this repository has more functionality)
+Example: Download the "verkehrsmengen" dataset of 2020 and clip them to the area of Freiburg im Breisgau.
+```
+$ stadtradeln-data-manager download 2020 verkehrsmengen
+$ stadtradeln-data-manager extract 2020 verkehrsmengen
+$ stadtradeln-data-manager clip 2020 verkehrsmengen -latmin 7.616 -latmax 8.112 -lonmin 47.87 -lonmax 48.11
+```
 
 ## See also
 - [teelram-data](https://github.com/barentsen/telraam-data): A friendly Python package to download traffic count data from Telraam.net. (not by me)
