@@ -13,9 +13,13 @@ jobs:
     steps:
     - name: Install virtualenv package
       run: python3 -m pip install virtualenv
+    - name: Set up Git repository
+      uses: actions/checkout@v2
+    - name: Change directory
+      run: cd python-stadtradeln-data
     - name: Create virtualenv
       run: virtualenv venv
     - name: Install package
-      run: python3 -m pip install -e .
+      run: python3 -m pip install .
     - name: Run pytest
       run: pytest
