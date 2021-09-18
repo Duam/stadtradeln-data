@@ -15,8 +15,6 @@ jobs:
       run: python3 -m pip install virtualenv
     - name: Set up Git repository
       uses: actions/checkout@v2
-    - name: Change directory
-      run: pwd && cd stadtradeln-data
     - name: Create virtualenv
       run: virtualenv venv
     - name: Install package
