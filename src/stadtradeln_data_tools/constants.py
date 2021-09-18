@@ -22,4 +22,3 @@ data_urls = {
 }
 
 default_cache_dir = pathlib.Path('/tmp/stadtradeln_data/')
-default_clipped_output_dir = pathlib.Path(default_cache_dir, "clipped/")

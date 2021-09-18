@@ -8,7 +8,7 @@ def get_coordinates_from_linestring(
         linestring: str
 ) -> Tuple[Coordinate, Coordinate]:
     """Converts a GIS-readable linestring into two coordinate-pairs describing the line's endpoints.
-    :param linestring: A string formatted like "LINESTRING(<latitude1> <longitude2>, <latitude2> <longitude2>)".
+    :param linestring: A string formatted like "LINESTRING(<latitude1> <longitude2>,<latitude2> <longitude2>)".
     :returns: Two coordinate-pairs having latitude and longitude, each.
     """
     endpoints = linestring.replace("LINESTRING(", "").replace(")", "").split(",")

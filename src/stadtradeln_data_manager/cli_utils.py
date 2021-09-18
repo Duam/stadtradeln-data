@@ -13,11 +13,11 @@ def download(
         dataset_type: str,
         download_dir: pathlib.Path = default_cache_dir,
 ) -> DownloadResult:
-    """
-    :param year:
-    :param dataset_type:
-    :param download_dir:
-    :returns:
+    """Downloads a whole (zipped) STADTRADELN dataset from the database of the BmVI and stores it locally.
+    :param year: The year of when the dataset was collected
+    :param dataset_type: The type of the dataset (e.g. "verkehrsmengen" or "geschwindigkeiten")
+    :param download_dir: The directory the dataset should be stored in.
+    :returns: An object containing meta-info about the download's result.
     """
     if year not in data_urls.keys():
         return DownloadResult(Status.UNKNOWN_DATASET, "")
@@ -78,7 +78,7 @@ def extract(
     """Extracts a .csv.tar.gz dataset.
     :param tar_path: The path of the compressed dataset (.csv.tar.gz)
     :param output_dir: The directory that the file should be extracted to.
-    :returns: An object containing information about the extraction result.
+    :returns: An object containing meta-info about the extraction result.
     """
     print(f"Extracting dataset in \"{tar_path}\".")
     extract_result = extract_dataset(tar_path, output_dir)
@@ -102,14 +102,14 @@ def clip(
         longitude_min: float = -np.inf,
         longitude_max: float = np.inf,
 ) -> ClipResult:
-    """
-    :param filepath:
-    :param output_filepath:
-    :param latitude_min:
-    :param latitude_max:
-    :param longitude_min:
-    :param longitude_max:
-    :returns:
+    """Clips a STADTRADELN dataset to a desired geographical region.
+    :param filepath: The path to the STADTRADELN dataset in .csv format
+    :param output_filepath: The path (directory + filename) of the clipped dataset.
+    :param latitude_min: The minimum desired latitude.
+    :param latitude_max: The maximum desired latitude.
+    :param longitude_min: The minimum longitude.
+    :param longitude_max: The maximum longitude.
+    :returns: An object containing meta-info about the clipping result.
     """
     print(f"Clipping dataset \"{filepath}\".")
     print("Chosen geographical region:")

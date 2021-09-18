@@ -33,9 +33,12 @@ def write_csv(
         df: pd.DataFrame,
         csv_path: str
 ) -> None:
-    """ TODO: Write documentation
-    :param df:
-    :param csv_path:
+    """Writes a STADTRADELN dataset in pandas.DataFrame format to a .csv file.
+    The given dataset must have columns "latitude_start", "latitude_end", "longitude_start", "longitude_end"
+    and "occurences".
+    :param df: A pandas.DataFrame containing the data.
+    :param csv_path: The path of the target .csv file.
+    :returns: Nothing.
     """
     lines = [
         get_linestring_from_coordinates(
