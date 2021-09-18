@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create virtualenv
+      run: virtualenv venv
+    - name: Install package
+      run: python3 -m pip install -e .
+    - name: Run pytest
+      run: pytest
