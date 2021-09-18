@@ -16,7 +16,7 @@ jobs:
     - name: Set up Git repository
       uses: actions/checkout@v2
     - name: Change directory
-      run: cd python-stadtradeln-data
+      run: cd stadtradeln-data
     - name: Create virtualenv
       run: virtualenv venv
     - name: Install package
