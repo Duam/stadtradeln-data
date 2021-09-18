@@ -11,6 +11,8 @@ jobs:
   unit_tests:
     runs-on: ubuntu-latest
     steps:
+    - name: Install virtualenv package
+      run: python3 -m pip install virtualenv
     - name: Create virtualenv
       run: virtualenv venv
     - name: Install package
