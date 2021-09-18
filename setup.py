@@ -22,7 +22,6 @@ setup(
     python_requires='>=3.6',
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    #py_modules=['__main__.py'],
     license="MIT",
     url="https://github.com/Duam/stadtradeln-data",
     author="Paul Daum",
