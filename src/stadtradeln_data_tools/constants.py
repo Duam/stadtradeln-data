@@ -1,4 +1,5 @@
 import pathlib
+import tempfile
 
 data_urls = {
     2018: {
@@ -21,4 +22,4 @@ data_urls = {
     }
 }
 
-default_cache_dir = pathlib.Path('/tmp/stadtradeln_data/')
+default_cache_dir = pathlib.Path(tempfile.gettempdir(), 'stadtradeln_data/')
