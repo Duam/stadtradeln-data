@@ -7,7 +7,7 @@ def read(fname):
 
 
 setup(
-    name='stadtradeln_data_tools',
+    name='stadtradeln-data',
     version="0.0.1",
     setup_requires=['setuptools'],
     use_scm_version=False,
