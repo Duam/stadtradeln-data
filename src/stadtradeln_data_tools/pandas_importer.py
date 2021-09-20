@@ -42,14 +42,14 @@ def write_csv(
     """
     lines = [
         get_linestring_from_coordinates(
-            (row["latitude_start"], row["longitude_start"]),
-            (row["latitude_end"], row["longitude_end"]))
+            (row.latitude_start, row.longitude_start),
+            (row.latitude_end, row.longitude_end))
         for row in df.itertuples()
     ]
     remaining_data = df[set(df.columns).difference(
         {'latitude_start', 'longitude_start', 'latitude_end', 'longitude_end', 'occurrences'})]
     pd.DataFrame({
         'edge_geo': lines,
-        'occurrences': df["occurrences"],
+        'occurrences': df.occurrences,
         **dict(remaining_data)
     }).to_csv(csv_path, index=False)
