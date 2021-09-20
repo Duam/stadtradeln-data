@@ -30,10 +30,10 @@ $ stadtradeln-data-manager clip 2020 verkehrsmengen -latmin 7.616 -latmax 8.112 
 import stadtradeln_data_tools as sdt
 
 # Assumes that you have previously downloaded and extracted a dataset
-df = sdt.pandas_importer.load_csv("/tmp/stadtradeln_data/verkehrsmengen_2020_clipped.csv")
+df = sdt.load_csv("/tmp/stadtradeln_data/verkehrsmengen_2020_clipped.csv")
 
 # Possibly further clip the data
-df = sdt.dataset_clipper.clip_dataset(
+df = sdt.clip_dataset(
     df=df,
     latitude_lim=(7.9, 8.1),
     longitude_lim=(47.9, 48.1)
@@ -43,27 +43,10 @@ df = sdt.dataset_clipper.clip_dataset(
 print(df)
 ```
 
-
-## The repository
-#### Installation
+## Installation
 ```bash
-$ git clone git@github.com:Duam/python-stadtradeln-data.git
-$ cd python-stadtradeln-data
-$ virtualenv venv
-$ source venv/bin/activate
-$ pip install -e .
-$ stadtradeln-data-manager --help
+$ pip install stadtradeln-data
 ```
-
-#### Folder structure
-```
-./
- ├ src/
- │ ├ stadtradeln_data_tools/      # The API for processing the datasets
- │ └ stadtradeln_data_manager/    # A command line interface for handling datasets manually
- └ tests/                         # Unit-tests
-```
-
 
 ## See also
 - [teelram-data](https://github.com/barentsen/telraam-data): A friendly Python package to download traffic count data from Telraam.net. (not by me)
