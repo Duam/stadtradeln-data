@@ -1,6 +1,6 @@
 # stadtradeln-data
 
-[![CI](https://github.com/Duam/stadtradeln-data/actions/workflows/pytest.yml/badge.svg?branch=master)](https://github.com/Duam/stadtradeln-data/actions/workflows/pytest.yml)
+[![pytest](https://github.com/Duam/stadtradeln-data/actions/workflows/pytest.yml/badge.svg?branch=master)](https://github.com/Duam/stadtradeln-data/actions/workflows/pytest.yml)
 
 A Python package to download bicycle traffic count data from the [STADTRADELN](https://www.stadtradeln.de/home) [database](https://www.mcloud.de/web/guest/suche/-/results/detail/ECF9DF02-37DC-4268-B017-A7C2CF302006).
 
