@@ -29,6 +29,7 @@ setup(
     description="A python package for downloading, extracting and clipping bicycle traffic count data "
                 "from the STADTRADELN database",
     long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
