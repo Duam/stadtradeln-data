@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated github badge label in README.md
 - Changed README text type to markdown
+- Prepared README.md for first release on pypi
+- Put all relevant imports into `src/stadtradeln_data_tool/__init__.py`
 
 ## [0.0.1] - 2020-09-20
 ### Added
