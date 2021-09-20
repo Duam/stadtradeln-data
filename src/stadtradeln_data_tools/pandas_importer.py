@@ -18,13 +18,13 @@ def load_csv(
     lines = [get_coordinates_from_linestring(s) for s in df.edge_geo]
     start_points = [line_vertices[0] for line_vertices in lines]
     end_points = [line_vertices[1] for line_vertices in lines]
-    remaining_data = df[set(df.columns).difference({'edge_geo', 'occurences'})]
+    remaining_data = df[set(df.columns).difference({'edge_geo', 'occurrences'})]
     return pd.DataFrame({
         'latitude_start': [coord.latitude for coord in start_points],
         'longitude_start': [coord.longitude for coord in start_points],
         'latitude_end': [coord.latitude for coord in end_points],
         'longitude_end': [coord.longitude for coord in end_points],
-        'occurences': df.occurrences,
+        'occurrences': df.occurrences,
         **dict(remaining_data)
     })
 
@@ -35,7 +35,7 @@ def write_csv(
 ) -> None:
     """Writes a STADTRADELN dataset in pandas.DataFrame format to a .csv file.
     The given dataset must have columns "latitude_start", "latitude_end", "longitude_start", "longitude_end"
-    and "occurences".
+    and "occurrences".
     :param df: A pandas.DataFrame containing the data.
     :param csv_path: The path of the target .csv file.
     :returns: Nothing.
@@ -47,9 +47,9 @@ def write_csv(
         for row in df.itertuples()
     ]
     remaining_data = df[set(df.columns).difference(
-        {'latitude_start', 'longitude_start', 'latitude_end', 'longitude_end', 'occurences'})]
+        {'latitude_start', 'longitude_start', 'latitude_end', 'longitude_end', 'occurrences'})]
     pd.DataFrame({
         'edge_geo': lines,
-        'occurences': df.occurences,
+        'occurrences': df["occurrences"],
         **dict(remaining_data)
     }).to_csv(csv_path, index=False)
